@@ -2,8 +2,8 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { SidebarLayout } from '@/components/Layout';
 import { SpinWheel } from '@/components/ui/spin-wheel';
 import { FloatingWheelGame } from '@/components/FloatingWheelGame';
-import { ScratchCard } from '@/components/ui/scratch-card';
-import { PickAGift } from '@/components/ui/pick-a-gift';
+import { FloatingScratchCardGame } from '@/components/FloatingScratchCardGame';
+import { FloatingPickAGiftGame } from '@/components/FloatingPickAGiftGame';
 import { Plinko } from '@/components/ui/plinko';
 import { SlotMachine } from '@/components/SlotMachine/Game';
 import { AdvancedScavengerHunt } from '@/components/ScavengerHunt/AdvancedScavengerHunt';
@@ -106,7 +106,7 @@ function App({ prizes, colors, redeemCodes, title, buttonText, spinningText }: A
     loadConfigurations();
   }, []);
 
-  const [currentScratchPrize, setCurrentScratchPrize] = useState(
+  const [currentScratchPrize] = useState(
     configs.scratchCard.prizes[Math.floor(Math.random() * configs.scratchCard.prizes.length)]
   );
 
@@ -137,53 +137,11 @@ function App({ prizes, colors, redeemCodes, title, buttonText, spinningText }: A
     playGameSound('wheel', 'stop').catch(console.warn);
   };
 
-  // Scratch Card Event Handlers
-  const handleScratchStart = () => {
-    console.log("Scratch started!");
-    playGameSound('scratch', 'scratch').catch(console.warn);
-    setGameStats((prev: any) => ({ ...prev, totalPlays: prev.totalPlays + 1 }));
-  };
-
-  const handleScratchProgress = (percentage: number) => {
-    console.log("Scratch progress:", percentage + "%");
-    setGameStats(prev => ({ ...prev, scratchProgress: percentage }));
-  };
-
-  const handleScratchReveal = (prize: { text: string; value?: string }) => {
-    console.log("Prize revealed:", prize);
-    playGameSound('scratch', 'reveal').catch(console.warn);
-    if (prize.text !== "Try Again!") {
-      setGameStats(prev => ({ ...prev, prizesWon: prev.prizesWon + 1 }));
-    }
-  };
-
-  const handleScratchReset = () => {
-    const newPrize = configs.scratchCard.prizes[Math.floor(Math.random() * configs.scratchCard.prizes.length)];
-    setCurrentScratchPrize(newPrize);
-    setGameStats(prev => ({ ...prev, scratchProgress: 0 }));
-    console.log("Scratch card reset with new prize:", newPrize);
-  };
+  // Scratch Card: inline handlers removed; floating modal controls the flow
 
 
 
-  // Pick-a-Gift Event Handlers
-  const handleGiftSelect = (giftIndex: number) => {
-    console.log("Gift selected:", giftIndex);
-    playGameSound('gift', 'select').catch(console.warn);
-    setGameStats(prev => ({ ...prev, giftsSelected: prev.giftsSelected + 1 }));
-  };
-
-  const handleGiftReveal = (prize: { text: string; value?: string }) => {
-    console.log("Gift revealed:", prize);
-    playGameSound('gift', 'reveal').catch(console.warn);
-    if (prize.text !== "Try Again!") {
-      setGameStats(prev => ({ ...prev, prizesWon: prev.prizesWon + 1 }));
-    }
-  };
-
-  const handleGiftReset = () => {
-    console.log("Gift game reset");
-  };
+  // Pick-a-Gift flow is handled entirely inside FloatingPickAGiftGame
 
   // Plinko Event Handlers
   const handlePlinkoDropStart = () => {
@@ -361,35 +319,11 @@ function App({ prizes, colors, redeemCodes, title, buttonText, spinningText }: A
         getGameInstructions={getGameInstructions}
       >
         <div className="p-4 space-y-8">
-          {activeGame === "scratch" && (
-          <ScratchCard
-            prize={currentScratchPrize}
-            cardWidth={400}
-            cardHeight={250}
-            scratchColor="#c0c0c0"
-            scratchPattern="Scratch to reveal your prize! 🎁"
-            revealThreshold={60}
-            title=""
-            resetButtonText="Play Again"
-            instructions="Use your mouse or finger to scratch the surface!"
-            variant="card"
-            size="lg"
-            onScratchStart={handleScratchStart}
-            onScratchProgress={handleScratchProgress}
-            onReveal={handleScratchReveal}
-            onReset={handleScratchReset}
-          />
-        )}
+          {/* Scratch card is intentionally not rendered inline.
+              Use the floating icon to open the unified modal experience. */}
 
-        {activeGame === "gift" && (
-          <PickAGift
-            prizes={configs.pickAGift.prizes}
-            onGiftSelect={handleGiftSelect}
-            onReveal={handleGiftReveal}
-            onReset={handleGiftReset}
-            className="py-4"
-          />
-        )}
+        {/* Pick-a-Gift is intentionally not rendered inline when active. */}
+        {activeGame === "gift" && null}
 
         {activeGame === "plinko" && (
           <Plinko
@@ -474,19 +408,67 @@ function App({ prizes, colors, redeemCodes, title, buttonText, spinningText }: A
       </div>
     </SidebarLayout>
     
-    {/* Floating Wheel Game - Always Available */}
-    <FloatingWheelGame
-      segments={configs.spinWheel.segments}
-      onSpinStart={handleSpinStart}
-      onSpinEnd={handleSpinEnd}
-      buttonText={configs.spinWheel.defaults.buttonText}
-      spinningText={configs.spinWheel.defaults.spinningText}
-      title={configs.spinWheel.defaults.title}
-      wheelSize={configs.spinWheel.defaults.wheelSize}
-      animationDuration={configs.spinWheel.defaults.animationDuration}
-      minRevolutions={configs.spinWheel.defaults.minRevolutions}
-      maxRevolutions={configs.spinWheel.defaults.maxRevolutions}
-    />
+    {/* Floating Games */}
+    {activeGame === 'scratch' ? (
+      // On the Scratch screen, show only the Scratch floating icon/modal
+      <FloatingScratchCardGame
+        prize={currentScratchPrize}
+        cardWidth={configs.scratchCard.defaults.cardWidth}
+        cardHeight={configs.scratchCard.defaults.cardHeight}
+        scratchColor={configs.scratchCard.defaults.scratchColor}
+        scratchPattern={configs.scratchCard.defaults.scratchPattern}
+        revealThreshold={configs.scratchCard.defaults.revealThreshold}
+        title={configs.scratchCard.defaults.title}
+        resetButtonText={configs.scratchCard.defaults.resetButtonText}
+        instructions={configs.scratchCard.defaults.instructions}
+      />
+    ) : activeGame === 'wheel' ? (
+      // On the Wheel screen, show only the Wheel floating icon/modal
+      <FloatingWheelGame
+        segments={configs.spinWheel.segments}
+        onSpinStart={handleSpinStart}
+        onSpinEnd={handleSpinEnd}
+        buttonText={configs.spinWheel.defaults.buttonText}
+        spinningText={configs.spinWheel.defaults.spinningText}
+        title={configs.spinWheel.defaults.title}
+        wheelSize={configs.spinWheel.defaults.wheelSize}
+        animationDuration={configs.spinWheel.defaults.animationDuration}
+        minRevolutions={configs.spinWheel.defaults.minRevolutions}
+        maxRevolutions={configs.spinWheel.defaults.maxRevolutions}
+      />
+    ) : activeGame === 'gift' ? (
+      // On the Pick-a-Gift screen, show only the Gift floating icon/modal
+      <FloatingPickAGiftGame prizes={configs.pickAGift.prizes} className="right-6 bottom-6" />
+    ) : (
+      <>
+        <FloatingWheelGame
+          segments={configs.spinWheel.segments}
+          onSpinStart={handleSpinStart}
+          onSpinEnd={handleSpinEnd}
+          buttonText={configs.spinWheel.defaults.buttonText}
+          spinningText={configs.spinWheel.defaults.spinningText}
+          title={configs.spinWheel.defaults.title}
+          wheelSize={configs.spinWheel.defaults.wheelSize}
+          animationDuration={configs.spinWheel.defaults.animationDuration}
+          minRevolutions={configs.spinWheel.defaults.minRevolutions}
+          maxRevolutions={configs.spinWheel.defaults.maxRevolutions}
+        />
+
+        <FloatingScratchCardGame
+          prize={currentScratchPrize}
+          cardWidth={configs.scratchCard.defaults.cardWidth}
+          cardHeight={configs.scratchCard.defaults.cardHeight}
+          scratchColor={configs.scratchCard.defaults.scratchColor}
+          scratchPattern={configs.scratchCard.defaults.scratchPattern}
+          revealThreshold={configs.scratchCard.defaults.revealThreshold}
+          title={configs.scratchCard.defaults.title}
+          resetButtonText={configs.scratchCard.defaults.resetButtonText}
+          instructions={configs.scratchCard.defaults.instructions}
+        />
+
+        <FloatingPickAGiftGame prizes={configs.pickAGift.prizes} />
+      </>
+    )}
     </>
   );
 }

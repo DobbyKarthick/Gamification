@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Floating Pick a Gift UMD Demo</title>
+    <link rel="stylesheet" href="../../dist-umd-new/floating-pick-a-gift.css" />
+  </head>
+  <body>
+    <div class="card">
+      <h1>Floating Pick a Gift (UMD)</h1>
+      <p>This page loads the UMD bundle and renders the Floating Pick a Gift game with modal flow.</p>
+      <div id="app"></div>
+    </div>
+
+    <!-- React + ReactDOM from CDN (globals React, ReactDOM) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <!-- UMD bundle from dist-umd-new -->
+    <script src="../../dist-umd-new/floating-pick-a-gift.umd.js"></script>
+    <script>
+      (function() {
+        const container = document.getElementById('app');
+        const prizes = [
+          { text: "10% Off", value: "Save 10% on your next order", icon: "🎯", color: "#3b82f6", probability: 30 },
+          { text: "Free Shipping", value: "Free shipping on orders over $50", icon: "🚚", color: "#10b981", probability: 25 },
+          { text: "15% Off", value: "Save 15% on your next order", icon: "💰", color: "#f59e0b", probability: 20 },
+          { text: "Buy 1 Get 1", value: "Buy one get one free on select items", icon: "🎁", color: "#8b5cf6", probability: 15 },
+          { text: "20% Off", value: "Save 20% on your next order", icon: "⭐", color: "#ef4444", probability: 8 },
+          { text: "$25 Off", value: "Get $25 off orders over $100", icon: "💎", color: "#06b6d4", probability: 2 }
+        ];
+
+        // Debug: list available exports on the UMD global
+        console.log('window.FloatingPickAGift:', window.FloatingPickAGift);
+        console.log('Direct FloatingPickAGift global:', typeof FloatingPickAGift !== 'undefined' ? FloatingPickAGift : 'undefined');
+
+        // UMD should expose functions directly on the global
+        if (typeof FloatingPickAGift !== 'undefined' && FloatingPickAGift.renderFloatingPickAGift) {
+          console.log('Using direct FloatingPickAGift.renderFloatingPickAGift');
+          FloatingPickAGift.renderFloatingPickAGift(container, { prizes });
+        } else if (typeof FloatingPickAGift !== 'undefined' && FloatingPickAGift.renderPickAGift) {
+          console.log('Using direct FloatingPickAGift.renderPickAGift');
+          FloatingPickAGift.renderPickAGift(container, { prizes });
+        } else if (window.FloatingPickAGift && window.FloatingPickAGift.renderFloatingPickAGift) {
+          console.log('Using window.FloatingPickAGift.renderFloatingPickAGift');
+          window.FloatingPickAGift.renderFloatingPickAGift(container, { prizes });
+        } else if (window.FloatingPickAGift && window.FloatingPickAGift.renderPickAGift) {
+          console.log('Using window.FloatingPickAGift.renderPickAGift');
+          window.FloatingPickAGift.renderPickAGift(container, { prizes });
+        } else {
+          console.error('No floating pick a gift functions found');
+          console.log('Available globals:', {
+            FloatingPickAGift: typeof FloatingPickAGift !== 'undefined' ? Object.keys(FloatingPickAGift) : 'undefined',
+            windowFloatingPickAGift: window.FloatingPickAGift ? Object.keys(window.FloatingPickAGift) : 'undefined'
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>

@@ -293,13 +293,16 @@ export const SidebarLayout: React.FC<SidebarLayoutProps> = ({
                   {children}
                 </div>
 
-                {/* Game Instructions */}
-                <div className="mt-8 flex justify-center">
-                  <div className="bg-white/20 backdrop-blur-xl border border-white/30 rounded-xl p-6 shadow-2xl max-w-4xl w-full">
+                {/* Game Instructions (sticky in viewport) */}
+                <div className="sticky bottom-0 z-30 flex justify-center px-2 pb-2 pt-4 bg-gradient-to-t from-white/70 to-transparent dark:from-slate-900/70">
+                  <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border border-white/30 dark:border-white/10 rounded-xl p-4 md:p-6 shadow-2xl max-w-4xl w-full">
                     <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white text-center">
                       🎮 How to Play
                     </h3>
-                    <div className="text-gray-800 dark:text-gray-200 text-base leading-relaxed">
+                    <div className={cn(
+                      "text-gray-800 dark:text-gray-200 text-sm md:text-base leading-relaxed",
+                      activeGame === 'scratch' ? 'text-left' : 'text-center'
+                    )}>
                       {getGameInstructions()}
                     </div>
                   </div>

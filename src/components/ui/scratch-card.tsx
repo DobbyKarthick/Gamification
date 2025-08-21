@@ -47,6 +47,7 @@ interface ScratchCardProps
   resetButtonText?: string;
   instructions?: string;
   disabled?: boolean;
+  externalReveal?: boolean;
   onScratchStart?: () => void;
   onScratchProgress?: (percentage: number) => void;
   onReveal?: (prize: ScratchCardPrize) => void;
@@ -69,6 +70,7 @@ const ScratchCard = React.forwardRef<HTMLDivElement, ScratchCardProps>(
       resetButtonText = defaultScratchCardConfig.defaults.resetButtonText,
       instructions = defaultScratchCardConfig.defaults.instructions,
       disabled = false,
+      externalReveal = false,
       onScratchStart,
       onScratchProgress,
       onReveal,
@@ -308,7 +310,7 @@ const ScratchCard = React.forwardRef<HTMLDivElement, ScratchCardProps>(
         </div>
 
         {/* Result display */}
-        {isRevealed && (
+        {isRevealed && !externalReveal && (
           <div className="mb-4 p-4 bg-primary/10 border border-primary/20 rounded-lg text-center">
             <p className="text-sm font-medium text-muted-foreground mb-1">
               Congratulations! You won:
@@ -321,7 +323,7 @@ const ScratchCard = React.forwardRef<HTMLDivElement, ScratchCardProps>(
         )}
 
         {/* Reset button */}
-        {isRevealed && (
+        {isRevealed && !externalReveal && (
           <Button
             onClick={handleReset}
             disabled={disabled}

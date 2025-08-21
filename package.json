@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "tsc && vite build",
+    "build:umd": "tsc && vite build --config vite.umd.config.ts",
     "lint": "eslint .",
     "preview": "vite preview"
   },

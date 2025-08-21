@@ -39,6 +39,7 @@ interface PickAGiftProps
   extends React.HTMLAttributes<HTMLDivElement>,
   VariantProps<typeof pickAGiftVariants> {
   prizes: PickAGiftPrize[];
+  externalReveal?: boolean;
   onGiftSelect?: (giftIndex: number) => void;
   onReveal?: (prize: PickAGiftPrize) => void;
   onReset?: () => void;
@@ -51,6 +52,7 @@ const PickAGift = React.forwardRef<HTMLDivElement, PickAGiftProps>(
       size,
       variant,
       prizes = defaultPickAGiftConfig.prizes,
+      externalReveal = false,
       onGiftSelect,
       onReveal,
       onReset,
@@ -243,48 +245,52 @@ const PickAGift = React.forwardRef<HTMLDivElement, PickAGiftProps>(
               </div>
             ) : (
               /* Prize Reveal */
-              <div className="text-center mb-8">
-                <div className="inline-block p-8 bg-white/20 backdrop-blur-sm rounded-2xl border border-white/30 shadow-xl">
-                  <div className="text-6xl mb-4">{revealedPrize.icon}</div>
-                  <h3 className="text-2xl font-bold text-white mb-2">
-                    Congratulations!
-                  </h3>
-                  <p className="text-xl text-white/90 mb-2">
-                    You won: <span className="font-bold">{revealedPrize.text}</span>
-                  </p>
-                  {revealedPrize.value && (
-                    <p className="text-white/80 text-sm">
-                      {revealedPrize.value}
+              !externalReveal && (
+                <div className="text-center mb-8">
+                  <div className="inline-block p-8 bg-white/20 backdrop-blur-sm rounded-2xl border border-white/30 shadow-xl">
+                    <div className="text-6xl mb-4">{revealedPrize.icon}</div>
+                    <h3 className="text-2xl font-bold text-white mb-2">
+                      Congratulations!
+                    </h3>
+                    <p className="text-xl text-white/90 mb-2">
+                      You won: <span className="font-bold">{revealedPrize.text}</span>
                     </p>
-                  )}
+                    {revealedPrize.value && (
+                      <p className="text-white/80 text-sm">
+                        {revealedPrize.value}
+                      </p>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )
             )}
 
             {/* Action Buttons */}
-            <div className="flex justify-center space-x-4">
-              {revealedPrize ? (
-                <>
-                  <Button
-                    onClick={handleReset}
-                    className="bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm"
-                    size="lg"
-                  >
-                    Play Again
-                  </Button>
-                  <Button
-                    className="bg-white text-purple-600 hover:bg-gray-100"
-                    size="lg"
-                  >
-                    Claim Prize
-                  </Button>
-                </>
-              ) : (
-                <p className="text-white/80 text-sm mt-4">
-                  Choose any gift box to reveal your prize!
-                </p>
-              )}
-            </div>
+            {!externalReveal && (
+              <div className="flex justify-center space-x-4">
+                {revealedPrize ? (
+                  <>
+                    <Button
+                      onClick={handleReset}
+                      className="bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm"
+                      size="lg"
+                    >
+                      Play Again
+                    </Button>
+                    <Button
+                      className="bg-white text-purple-600 hover:bg-gray-100"
+                      size="lg"
+                    >
+                      Claim Prize
+                    </Button>
+                  </>
+                ) : (
+                  <p className="text-white/80 text-sm mt-4">
+                    Choose any gift box to reveal your prize!
+                  </p>
+                )}
+              </div>
+            )}
 
             {/* Loading Animation */}
             {isAnimating && (
