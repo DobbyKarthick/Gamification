@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Gift } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PickAGift, type PickAGiftPrize } from '@/components/ui/pick-a-gift';
@@ -17,6 +17,15 @@ export const FloatingPickAGiftGame: React.FC<FloatingPickAGiftGameProps> = ({
   prizes,
   className,
 }) => {
+  // Coachmark: show once per user for gift game
+  const [showCoachmark, setShowCoachmark] = useState(false);
+  useEffect(() => {
+    try {
+      const key = 'coachmark_shown_gift';
+      const seen = typeof window !== 'undefined' ? localStorage.getItem(key) : '1';
+      if (!seen) setShowCoachmark(true);
+    } catch {}
+  }, []);
   const {
     // state
     isModalOpen,
@@ -58,6 +67,28 @@ export const FloatingPickAGiftGame: React.FC<FloatingPickAGiftGameProps> = ({
         <div className="absolute inset-0 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-sm" />
         <div className="absolute inset-0 rounded-full border-2 border-white/30 animate-ping" />
       </button>
+
+      {/* Coachmark tooltip (once) */}
+      {showCoachmark && (
+        <div
+          className="fixed bottom-24 right-6 z-50 max-w-xs bg-white text-gray-800 border border-gray-200 shadow-xl rounded-lg p-3 animate-in fade-in duration-200"
+          onClick={() => setShowCoachmark(false)}
+          role="dialog"
+          aria-live="polite"
+        >
+          <div className="text-sm font-semibold mb-1">Pick a Gift</div>
+          <div className="text-xs">Open to choose a mystery gift and redeem banking partner offers.</div>
+          <div className="mt-2 text-right">
+            <button
+              className="text-xs px-2 py-1 rounded bg-gray-100 hover:bg-gray-200"
+              onClick={() => {
+                try { localStorage.setItem('coachmark_shown_gift', '1'); } catch {}
+                setShowCoachmark(false);
+              }}
+            >Got it</button>
+          </div>
+        </div>
+      )}
 
       <GameModal
         isOpen={isModalOpen}

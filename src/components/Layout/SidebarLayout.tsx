@@ -7,18 +7,13 @@ import {
   Gamepad2,
   Trophy,
   Settings,
-  Volume2,
-  VolumeX,
-  ChevronRight,
-  Sparkles
+  ChevronRight
 } from "lucide-react";
 
 interface SidebarLayoutProps {
   children: React.ReactNode;
   activeGame: string;
   onGameChange: (game: string) => void;
-  soundEnabled: boolean;
-  onSoundToggle: () => void;
   gameStats: {
     totalPlays: number;
     prizesWon: number;
@@ -35,6 +30,7 @@ interface SidebarLayoutProps {
   winRate: number;
   getGameTitle: () => string;
   getGameDescription: () => string;
+  getGameBrief: () => string;
   getGameInstructions: () => React.ReactNode;
 }
 
@@ -55,12 +51,11 @@ export const SidebarLayout: React.FC<SidebarLayoutProps> = ({
   children,
   activeGame,
   onGameChange,
-  soundEnabled,
-  onSoundToggle,
   gameStats,
   winRate,
   getGameTitle,
   getGameDescription,
+  getGameBrief,
   getGameInstructions,
 }) => {
   const [sidebarExpanded, setSidebarExpanded] = React.useState(false);
@@ -125,20 +120,24 @@ export const SidebarLayout: React.FC<SidebarLayoutProps> = ({
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          <div className="h-full bg-gradient-to-br from-[#6C63FF]/20 via-[#000000]/20 to-[#6C63FF]/10 backdrop-blur-md border border-white/10 shadow-lg">
+          <div
+            className="h-full backdrop-blur-md shadow-lg"
+            style={{
+              background: "var(--sidebar)",
+              border: `1px solid var(--sidebar-border)`
+            }}
+          >
             {/* Sidebar Header */}
-            <div className="p-4 border-b border-white/10">
+            <div className="p-4" style={{ borderBottom: '1px solid var(--sidebar-border)' }}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <div className="w-8 h-8 bg-gradient-to-r from-[#6C63FF] to-[#8B5CF6] rounded-lg flex items-center justify-center mr-3 flex-shrink-0 shadow-lg">
-                    <Sparkles className="w-5 h-5 text-white" />
-                  </div>
-                  <h1 className={cn(
-                    "text-lg font-bold text-[#E5E5F0] transition-all duration-300 ease-in-out",
-                    sidebarExpanded ? "opacity-100" : "opacity-0 w-0 overflow-hidden"
-                  )}>
-                    Gamification Hub
-                  </h1>
+                  {/* Brand Logo only */}
+                  <img
+                    src="/xerago-desk2x.png"
+                    alt="Xerago"
+                    className="object-contain"
+                    style={{ height: 28, width: 'auto', maxWidth: sidebarExpanded ? 150 : 100 }}
+                  />
                 </div>
                 {/* Only show toggle button on mobile */}
                 <div className="md:hidden">
@@ -146,7 +145,7 @@ export const SidebarLayout: React.FC<SidebarLayoutProps> = ({
                     variant="ghost"
                     size="sm"
                     onClick={handleToggleClick}
-                    className="text-[#D1C4E9] hover:text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-200"
+                    className="text-gray-800 dark:text-gray-100 hover:text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-200"
                   >
                     <ChevronRight className={cn(
                       "w-4 h-4 transition-transform duration-300",
@@ -165,28 +164,25 @@ export const SidebarLayout: React.FC<SidebarLayoutProps> = ({
                   variant="ghost"
                   onClick={() => onGameChange(item.id)}
                   className={cn(
-                    "w-full justify-start transition-all duration-300 ease-in-out group relative overflow-hidden",
-                    activeGame === item.id
-                      ? "text-white bg-white/10 rounded-md shadow-lg border border-white/20"
-                      : "text-[#E5E5F0] hover:text-white hover:bg-white/10 rounded-md"
+                    "w-full justify-start transition-all duration-300 ease-in-out group relative overflow-hidden sidebar-nav-item",
+                    activeGame === item.id && "active"
                   )}
                 >
                   {/* Background Gradient */}
                   <div className={cn(
                     "absolute inset-0 bg-gradient-to-r opacity-0 transition-opacity duration-300 rounded-md",
-                    item.color,
-                    activeGame === item.id && "opacity-20"
+                    activeGame === item.id ? "opacity-15" : "opacity-0"
                   )} />
 
                   <div className="relative flex items-center w-full">
                     <span className={cn(
                       "text-xl mr-3 flex-shrink-0 transition-all duration-200",
-                      activeGame === item.id ? "text-white" : "text-[#D1C4E9] group-hover:text-white"
+                      activeGame === item.id ? "text-foreground" : "text-gray-700 dark:text-gray-300 group-hover:text-foreground"
                     )}>
                       {item.icon}
                     </span>
                     <span className={cn(
-                      "font-medium transition-all duration-300 ease-in-out whitespace-nowrap",
+                      "font-medium transition-all duration-300 ease-in-out whitespace-nowrap text-sidebar-foreground group-hover:text-foreground",
                       sidebarExpanded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 w-0"
                     )}>
                       {item.label}
@@ -195,7 +191,9 @@ export const SidebarLayout: React.FC<SidebarLayoutProps> = ({
 
                   {/* Active Indicator */}
                   {activeGame === item.id && (
-                    <div className="absolute right-2 w-2 h-2 bg-[#6C63FF] rounded-full animate-pulse shadow-lg" />
+                    <div className="absolute right-2 w-2 h-2 rounded-full animate-pulse shadow-lg"
+                      style={{ background: "var(--primary)" }}
+                    />
                   )}
                 </Button>
               ))}
@@ -203,41 +201,24 @@ export const SidebarLayout: React.FC<SidebarLayoutProps> = ({
 
             {/* Sidebar Footer */}
             <div className="p-4 border-t border-white/10 space-y-3">
-              {/* Sound Toggle */}
-              <Button
-                variant="ghost"
-                onClick={onSoundToggle}
-                className="w-full justify-start text-[#E5E5F0] hover:text-white hover:bg-white/10 rounded-md transition-all duration-200"
-              >
-                {soundEnabled ? (
-                  <Volume2 className="w-5 h-5 mr-3 flex-shrink-0 text-[#D1C4E9] group-hover:text-white transition-all duration-200" />
-                ) : (
-                  <VolumeX className="w-5 h-5 mr-3 flex-shrink-0 text-[#D1C4E9] group-hover:text-white transition-all duration-200" />
-                )}
-                <span className={cn(
-                  "transition-all duration-300 ease-in-out whitespace-nowrap",
-                  sidebarExpanded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 w-0"
-                )}>
-                  {soundEnabled ? "Sound On" : "Sound Off"}
-                </span>
-              </Button>
-
               {/* Game Stats */}
               {sidebarExpanded && (
                 <div className="space-y-2 pt-2">
-                  <div className="text-xs text-[#D1C4E9] font-medium">Game Stats</div>
+                  <div className="text-xs text-gray-600 dark:text-gray-300 font-medium">Game Stats</div>
                   <div className="grid grid-cols-2 gap-2">
                     <div className="text-center bg-white/5 backdrop-blur-sm rounded-lg p-2 border border-white/10">
-                      <div className="font-bold text-[#6C63FF]">
+                      <div className="font-bold"
+                           style={{ color: "var(--primary)" }}>
                         {gameStats.prizesWon}
                       </div>
-                      <div className="text-xs text-[#D1C4E9]">Wins</div>
+                      <div className="text-xs text-gray-600 dark:text-gray-400">Wins</div>
                     </div>
                     <div className="text-center bg-white/5 backdrop-blur-sm rounded-lg p-2 border border-white/10">
-                      <div className="font-bold text-[#8B5CF6]">
+                      <div className="font-bold"
+                           style={{ color: "var(--secondary)" }}>
                         {winRate}%
                       </div>
-                      <div className="text-xs text-[#D1C4E9]">Rate</div>
+                      <div className="text-xs text-gray-600 dark:text-gray-400">Rate</div>
                     </div>
                   </div>
                 </div>
@@ -258,11 +239,14 @@ export const SidebarLayout: React.FC<SidebarLayoutProps> = ({
                 <div className="flex items-center justify-between">
                   {/* Current Game Info */}
                   <div className="flex-1 text-center">
-                    <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
+                    <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                       {getGameTitle()}
                     </h2>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                    <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">
                       {getGameDescription()}
+                    </p>
+                    <p className="text-xs text-gray-600/80 dark:text-gray-400 mt-1">
+                      {getGameBrief()}
                     </p>
                   </div>
 

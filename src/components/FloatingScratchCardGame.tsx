@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Gift } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ScratchCard, type ScratchCardPrize } from '@/components/ui/scratch-card';
@@ -53,6 +53,16 @@ export const FloatingScratchCardGame: React.FC<FloatingScratchCardGameProps> = (
     requestEmailThenReveal,
   } = useGameModal({ startWithEmail: false, revealDelayMs: 0 });
 
+  // Coachmark: show once per user for scratch game
+  const [showCoachmark, setShowCoachmark] = useState(false);
+  useEffect(() => {
+    try {
+      const key = 'coachmark_shown_scratch';
+      const seen = typeof window !== 'undefined' ? localStorage.getItem(key) : '1';
+      if (!seen) setShowCoachmark(true);
+    } catch {}
+  }, []);
+
   const onReveal = useCallback((wonPrize: ScratchCardPrize) => {
     // After user finishes scratching, request email and then reveal the prize
     requestEmailThenReveal(wonPrize);
@@ -63,6 +73,8 @@ export const FloatingScratchCardGame: React.FC<FloatingScratchCardGameProps> = (
     const next = pool[Math.floor(Math.random() * pool.length)];
     setActivePrize(next);
     handleOpenModal();
+    try { localStorage.setItem('coachmark_shown_scratch', '1'); } catch {}
+    setShowCoachmark(false);
   }, [handleOpenModal]);
 
   return (
@@ -86,6 +98,28 @@ export const FloatingScratchCardGame: React.FC<FloatingScratchCardGameProps> = (
         <div className="absolute inset-0 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-sm" />
         <div className="absolute inset-0 rounded-full border-2 border-white/30 animate-ping" />
       </button>
+
+      {/* Coachmark tooltip (once) */}
+      {showCoachmark && (
+        <div
+          className="fixed bottom-24 right-24 z-50 max-w-xs bg-white text-gray-800 border border-gray-200 shadow-xl rounded-lg p-3 animate-in fade-in duration-200"
+          onClick={() => setShowCoachmark(false)}
+          role="dialog"
+          aria-live="polite"
+        >
+          <div className="text-sm font-semibold mb-1">Try Scratch Card</div>
+          <div className="text-xs">Open to reveal surprise rewards after simple banking actions.</div>
+          <div className="mt-2 text-right">
+            <button
+              className="text-xs px-2 py-1 rounded bg-gray-100 hover:bg-gray-200"
+              onClick={() => {
+                try { localStorage.setItem('coachmark_shown_scratch', '1'); } catch {}
+                setShowCoachmark(false);
+              }}
+            >Got it</button>
+          </div>
+        </div>
+      )}
 
       <GameModal
         isOpen={isModalOpen}

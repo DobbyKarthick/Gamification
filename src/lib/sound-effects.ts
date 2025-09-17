@@ -4,7 +4,7 @@
 class SoundManager {
   private audioContext: AudioContext | null = null;
   private sounds: Map<string, AudioBuffer> = new Map();
-  private isEnabled: boolean = true;
+  private isEnabled: boolean = false;
   private isInitialized: boolean = false;
   private activeSounds: Map<string, AudioBufferSourceNode> = new Map();
   private intervalTimers: Map<string, NodeJS.Timeout> = new Map();

@@ -1,0 +1,865 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Typography Scale */
+:root {
+  /* Typography Scale - Fixed Sizes (h3-h6 only) */
+  --font-size-h3: 2.074rem;
+  --font-size-h4: 1.728rem;
+  --font-size-h5: 1.44rem;
+  --font-size-h6: 1.2rem;
+  --font-size-p: 1rem;
+  --line-height-typography: 1.3; /* 130% */
+  
+  /* Chart Colors */
+  --chart-1: 222.2 84% 4.9%;
+  --chart-2: 210 40% 98%;
+  --chart-3: 210 40% 96%;
+  --chart-4: 214.3 31.8% 91.4%;
+  --chart-5: 215.4 16.3% 46.9%;
+  
+  /* Font Weight Scale */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+  
+  /* Letter Spacing Scale */
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0em;
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+  --letter-spacing-widest: 0.1em;
+}
+
+/* Typography Utility Classes */
+.typography-h3 {
+  font-size: var(--font-size-h3);
+  line-height: var(--line-height-typography);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.typography-h4 {
+  font-size: var(--font-size-h4);
+  line-height: var(--line-height-typography);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.typography-h5 {
+  font-size: var(--font-size-h5);
+  line-height: var(--line-height-typography);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-normal);
+}
+
+.typography-h6 {
+  font-size: var(--font-size-h6);
+  line-height: var(--line-height-typography);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-normal);
+}
+
+.typography-p {
+  font-size: var(--font-size-p);
+  line-height: var(--line-height-typography);
+  font-weight: var(--font-weight-normal);
+  letter-spacing: var(--letter-spacing-normal);
+}
+
+/* Font Weight Utilities */
+.font-light {
+  font-weight: var(--font-weight-light);
+}
+
+.font-normal {
+  font-weight: var(--font-weight-normal);
+}
+
+.font-medium {
+  font-weight: var(--font-weight-medium);
+}
+
+.font-semibold {
+  font-weight: var(--font-weight-semibold);
+}
+
+.font-bold {
+  font-weight: var(--font-weight-bold);
+}
+
+.font-extrabold {
+  font-weight: var(--font-weight-extrabold);
+}
+
+.font-black {
+  font-weight: var(--font-weight-black);
+}
+
+/* Letter Spacing Utilities */
+.tracking-tight {
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.tracking-normal {
+  letter-spacing: var(--letter-spacing-normal);
+}
+
+.tracking-wide {
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+.tracking-wider {
+  letter-spacing: var(--letter-spacing-wider);
+}
+
+.tracking-widest {
+  letter-spacing: var(--letter-spacing-widest);
+}
+
+@layer base {
+  :root {
+    /* TweekCN Base Colors - Updated */
+    --background: #fafafa;
+    --foreground: #000000;
+    --card: #ffffff;
+    --card-foreground: #000000;
+    --popover: #ffffff;
+    --popover-foreground: #000000;
+    
+    /* TweekCN Primary & Secondary - Green and Blue */
+    --primary: #249e5e;
+    --primary-foreground: #ffffff;
+    --secondary: #2a3289;
+    --secondary-foreground: #ffffff;
+    
+    /* TweekCN Muted Colors */
+    --muted: #fcfcfc;
+    --muted-foreground: #000000;
+    --accent: #f5f5f5;
+    --accent-foreground: #1e1e1e;
+    
+    /* TweekCN Destructive */
+    --destructive: #ff0022;
+    --destructive-foreground: #ffffff;
+    
+    /* TweekCN UI Colors */
+    --border: #fcfcfc;
+    --input: #dedede;
+    --ring: #b5b5b5;
+    
+    /* TweekCN Chart Colors - Keeping the nice blues and greens */
+    --chart-1: #8a8fdb; /* TweekCN blue */
+    --chart-2: #b2b6f0; /* TweekCN light blue */
+    --chart-3: #95dbb8; /* TweekCN teal green */
+    --chart-4: #b7f0d3; /* TweekCN light green */
+    --chart-5: #d5f6e5; /* TweekCN very light green */
+    
+    /* Enhanced Semantic Colors - Using TweekCN greens and custom variants */
+    --success: #249e5e;   /* Same as TweekCN primary */
+    --success-foreground: #ffffff;
+    --warning: #ff8c00;    /* Custom orange (not in TweekCN) */
+    --warning-foreground: #ffffff;
+    --info: #2a3289;      /* Same as TweekCN secondary */
+    --info-foreground: #ffffff;
+    
+    /* Enhanced Gradients - Updated with TweekCN colors */
+    --gradient-primary: linear-gradient(135deg, #249e5e 0%, #2a3289 100%);
+    --gradient-secondary: linear-gradient(135deg, #2a3289 0%, #8a8fdb 100%);
+    --gradient-success: linear-gradient(135deg, #249e5e 0%, #95dbb8 100%);
+    --gradient-warning: linear-gradient(135deg, #ff8c00 0%, #ffb347 100%);
+    --gradient-danger: linear-gradient(135deg, #ff0022 0%, #ff6568 100%);
+    --gradient-info: linear-gradient(135deg, #2a3289 0%, #8a8fdb 100%);
+    
+    /* TweekCN Sidebar Colors */
+    --sidebar: #fafafa;
+    --sidebar-foreground: #19191a;
+    --sidebar-primary: #19191a;
+    --sidebar-primary-foreground: #fafafa;
+    --sidebar-accent: #f5f5f5;
+    --sidebar-accent-foreground: #19191a;
+    --sidebar-border: #e5e5e5;
+    --sidebar-ring: #a1a1a1;
+    
+    /* Space Grotesk Font Family */
+    --font-sans: 'Space Grotesk', sans-serif;
+    --font-serif: 'Space Grotesk', sans-serif;
+    --font-mono: 'Space Grotesk', sans-serif;
+    
+    /* TweekCN Radius */
+    --radius: 0.625rem;
+    
+    /* Typography Scale - Fixed Sizes (h3-h6 only) */
+    --font-size-h3: 2.074rem;
+    --font-size-h4: 1.728rem;
+    --font-size-h5: 1.44rem;
+    --font-size-h6: 1.2rem;
+    --font-size-p: 1rem;
+    --line-height-typography: 1.3; /* 130% */
+    
+    /* Font Weight Scale */
+    --font-weight-light: 300;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
+    --font-weight-black: 900;
+    
+    /* Letter Spacing Scale */
+    --letter-spacing-tight: -0.025em;
+    --letter-spacing-normal: 0em;
+    --letter-spacing-wide: 0.025em;
+    --letter-spacing-wider: 0.05em;
+    --letter-spacing-widest: 0.1em;
+    
+    /* TweekCN Shadow System */
+    --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.09);
+    --shadow-xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.09);
+    --shadow-sm: 0px 1px 2px 0px hsl(0 0% 0% / 0.18), 0px 1px 2px -1px hsl(0 0% 0% / 0.18);
+    --shadow: 0px 1px 2px 0px hsl(0 0% 0% / 0.18), 0px 1px 2px -1px hsl(0 0% 0% / 0.18);
+    --shadow-md: 0px 1px 2px 0px hsl(0 0% 0% / 0.18), 0px 2px 4px -1px hsl(0 0% 0% / 0.18);
+    --shadow-lg: 0px 1px 2px 0px hsl(0 0% 0% / 0.18), 0px 4px 6px -1px hsl(0 0% 0% / 0.18);
+    --shadow-xl: 0px 1px 2px 0px hsl(0 0% 0% / 0.18), 0px 8px 10px -1px hsl(0 0% 0% / 0.18);
+    --shadow-2xl: 0px 1px 2px 0px hsl(0 0% 0% / 0.45);
+    --tracking-normal: 0em;
+    --spacing: 0.25rem;
+    
+    /* Animation Durations - Keeping your system */
+    --animation-duration-fast: 150ms;
+    --animation-duration-normal: 300ms;
+    --animation-duration-slow: 500ms;
+    --animation-duration-slower: 700ms;
+    
+    /* Z-Index Scale - Keeping your system */
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal-backdrop: 1040;
+    --z-modal: 1050;
+    --z-popover: 1060;
+    --z-tooltip: 1070;
+    --z-toast: 1080;
+  }
+
+  .dark {
+    /* TweekCN Dark Mode Colors */
+    --background: #19191a;
+    --foreground: #fafafa;
+    --card: #19191a;
+    --card-foreground: #fafafa;
+    --popover: #262626;
+    --popover-foreground: #fafafa;
+    
+    /* TweekCN Dark Primary & Secondary */
+    --primary: #249e5e;
+    --primary-foreground: #ffffff;
+    --secondary: #262626;
+    --secondary-foreground: #fafafa;
+    
+    /* TweekCN Dark Muted */
+    --muted: #262626;
+    --muted-foreground: #a1a1a1;
+    --accent: #404040;
+    --accent-foreground: #fafafa;
+    
+    /* TweekCN Dark Destructive */
+    --destructive: #ff6568;
+    --destructive-foreground: #fafafa;
+    
+    /* TweekCN Dark UI */
+    --border: #282828;
+    --input: #343434;
+    --ring: #737373;
+    
+    /* TweekCN Dark Chart Colors */
+    --chart-1: #92c5ff;
+    --chart-2: #3a81f6;
+    --chart-3: #2563ef;
+    --chart-4: #1a4eda;
+    --chart-5: #1f3fad;
+    
+    /* Dark mode semantic colors - Updated */
+    --success: #249e5e;   /* Same as primary */
+    --success-foreground: #ffffff;
+    --warning: #ffb347;    /* Lighter orange for dark mode */
+    --warning-foreground: #000000;
+    --info: #3a81f6;      /* TweekCN chart-2 */
+    --info-foreground: #ffffff;
+    
+    /* Dark mode gradients - Updated with TweekCN colors */
+    --gradient-primary: linear-gradient(135deg, #249e5e 0%, #2a3289 100%);
+    --gradient-secondary: linear-gradient(135deg, #262626 0%, #404040 100%);
+    --gradient-success: linear-gradient(135deg, #249e5e 0%, #92c5ff 100%);
+    --gradient-warning: linear-gradient(135deg, #ffb347 0%, #ffd700 100%);
+    --gradient-danger: linear-gradient(135deg, #ff6568 0%, #ff8a8d 100%);
+    --gradient-info: linear-gradient(135deg, #3a81f6 0%, #92c5ff 100%);
+    
+    /* TweekCN Dark Sidebar */
+    --sidebar: #19191a;
+    --sidebar-foreground: #fafafa;
+    --sidebar-primary: #1447e6;
+    --sidebar-primary-foreground: #fafafa;
+    --sidebar-accent: #262626;
+    --sidebar-accent-foreground: #fafafa;
+    --sidebar-border: #282828;
+    --sidebar-ring: #525252;
+    
+    /* Keep your font system - Space Grotesk */
+    --font-sans: 'Space Grotesk', sans-serif;
+    --font-serif: 'Space Grotesk', sans-serif;
+    --font-mono: 'Space Grotesk', sans-serif;
+    --radius: 0.625rem;
+    
+    /* TweekCN Shadow System for Dark Mode */
+    --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.09);
+    --shadow-xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.09);
+    --shadow-sm: 0px 1px 2px 0px hsl(0 0% 0% / 0.18), 0px 1px 2px -1px hsl(0 0% 0% / 0.18);
+    --shadow: 0px 1px 2px 0px hsl(0 0% 0% / 0.18), 0px 1px 2px -1px hsl(0 0% 0% / 0.18);
+    --shadow-md: 0px 1px 2px 0px hsl(0 0% 0% / 0.18), 0px 2px 4px -1px hsl(0 0% 0% / 0.18);
+    --shadow-lg: 0px 1px 2px 0px hsl(0 0% 0% / 0.18), 0px 4px 6px -1px hsl(0 0% 0% / 0.18);
+    --shadow-xl: 0px 1px 2px 0px hsl(0 0% 0% / 0.18), 0px 8px 10px -1px hsl(0 0% 0% / 0.18);
+    --shadow-2xl: 0px 1px 2px 0px hsl(0 0% 0% / 0.45);
+    --sidebar-background: #19191a;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply text-foreground;
+    background: var(--background);
+    font-family: var(--font-sans);
+    font-feature-settings: "rlig" 1, "calt" 1;
+    line-height: var(--line-height-typography);
+    min-height: 100vh;
+    /* Font loading optimization */
+    font-display: swap;
+  }
+  
+  /* Typography Base Styles */
+  /* Base Typography Styles (h3-h6 only) */
+  h3 {
+    font-size: var(--font-size-h3);
+    line-height: var(--line-height-typography);
+    font-family: var(--font-sans);
+  }
+  
+  h4 {
+    font-size: var(--font-size-h4);
+    line-height: var(--line-height-typography);
+    font-family: var(--font-sans);
+  }
+  
+  h5 {
+    font-size: var(--font-size-h5);
+    line-height: var(--line-height-typography);
+    font-family: var(--font-sans);
+  }
+  
+  h6 {
+    font-size: var(--font-size-h6);
+    line-height: var(--line-height-typography);
+    font-family: var(--font-sans);
+  }
+  
+  p {
+    font-size: var(--font-size-p);
+    line-height: var(--line-height-typography);
+    font-family: var(--font-sans);
+  }
+  
+  /* Typography uses fixed sizes - no responsive scaling needed */
+}
+
+@layer components {
+  /* Dashboard Components - Updated with TweekCN colors */
+  .dashboard-card {
+    @apply bg-card text-card-foreground rounded-lg border border-border p-6 transition-all duration-200 hover:shadow-lg;
+    box-shadow: var(--shadow);
+  }
+  
+  .stat-card {
+    @apply dashboard-card relative overflow-hidden;
+  }
+  
+  .stat-card::before {
+    @apply absolute top-0 left-0 w-full h-1;
+    content: '';
+    background: var(--gradient-primary);
+  }
+  
+  /* Navigation Components */
+  .sidebar-nav-item {
+    @apply flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200;
+  }
+  
+  .sidebar-nav-item.active {
+    @apply bg-sidebar-accent text-sidebar-accent-foreground;
+  }
+  
+  .sidebar-nav-item:not(.active) {
+    @apply text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground;
+  }
+  
+  /* Button Components - Updated with TweekCN colors */
+  .btn-primary {
+    @apply text-primary-foreground font-medium py-2 px-4 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+    background: var(--gradient-primary);
+  }
+  
+  .btn-primary:hover {
+    background: var(--gradient-primary);
+    opacity: 0.95;
+    transform: translateY(-1px);
+  }
+  
+  .btn-secondary {
+    @apply text-secondary-foreground font-medium py-2 px-4 rounded-lg transition-all duration-200;
+    background: var(--gradient-secondary);
+  }
+  
+  .btn-secondary:hover {
+    background: var(--gradient-secondary);
+    opacity: 0.95;
+    transform: translateY(-1px);
+  }
+  
+  .btn-outline {
+    @apply border border-border hover:bg-accent hover:text-accent-foreground text-foreground font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+  }
+  
+  .btn-destructive {
+    @apply text-destructive-foreground font-medium py-2 px-4 rounded-lg transition-all duration-200;
+    background: var(--gradient-danger);
+  }
+  
+  .btn-destructive:hover {
+    background: var(--gradient-danger);
+    opacity: 0.95;
+    transform: translateY(-1px);
+  }
+  
+  /* Semantic Button Variants - Updated */
+  .btn-success {
+    @apply font-medium py-2 px-4 rounded-lg transition-all duration-200;
+    background: var(--gradient-success);
+    color: var(--success-foreground);
+  }
+  
+  .btn-success:hover {
+    background: var(--gradient-success);
+    opacity: 0.95;
+    transform: translateY(-1px);
+  }
+  
+  .btn-warning {
+    @apply font-medium py-2 px-4 rounded-lg transition-all duration-200;
+    background: var(--gradient-warning);
+    color: var(--warning-foreground);
+  }
+  
+  .btn-warning:hover {
+    background: var(--gradient-warning);
+    opacity: 0.95;
+    transform: translateY(-1px);
+  }
+  
+  .btn-info {
+    @apply font-medium py-2 px-4 rounded-lg transition-all duration-200;
+    background: var(--gradient-info);
+    color: var(--info-foreground);
+  }
+  
+  .btn-info:hover {
+    background: var(--gradient-info);
+    opacity: 0.95;
+    transform: translateY(-1px);
+  }
+  
+  /* Chart Color Buttons - Updated with TweekCN chart colors */
+  .btn-chart-1 {
+    @apply text-primary-foreground font-medium py-2 px-4 rounded-lg transition-all duration-200;
+    background: linear-gradient(135deg, var(--chart-1) 0%, var(--chart-2) 100%);
+  }
+  
+  .btn-chart-1:hover {
+    background: linear-gradient(135deg, var(--chart-1) 0%, var(--chart-2) 100%);
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+  
+  .btn-chart-2 {
+    @apply text-primary-foreground font-medium py-2 px-4 rounded-lg transition-all duration-200;
+    background: linear-gradient(135deg, var(--chart-2) 0%, var(--chart-3) 100%);
+  }
+  
+  .btn-chart-2:hover {
+    background: linear-gradient(135deg, var(--chart-2) 0%, var(--chart-3) 100%);
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+  
+  .btn-chart-3 {
+    @apply text-primary-foreground font-medium py-2 px-4 rounded-lg transition-all duration-200;
+    background: linear-gradient(135deg, var(--chart-3) 0%, var(--chart-4) 100%);
+  }
+  
+  .btn-chart-3:hover {
+    background: linear-gradient(135deg, var(--chart-3) 0%, var(--chart-4) 100%);
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+}
+
+@layer utilities {
+  /* Typography Utilities - Fixed Sizes (h3-h6 only) */
+  .text-h3 {
+    font-size: var(--font-size-h3);
+    line-height: var(--line-height-typography);
+    font-family: var(--font-sans);
+  }
+  
+  .text-h4 {
+    font-size: var(--font-size-h4);
+    line-height: var(--line-height-typography);
+    font-family: var(--font-sans);
+  }
+  
+  .text-h5 {
+    font-size: var(--font-size-h5);
+    line-height: var(--line-height-typography);
+    font-family: var(--font-sans);
+  }
+  
+  .text-h6 {
+    font-size: var(--font-size-h6);
+    line-height: var(--line-height-typography);
+    font-family: var(--font-sans);
+  }
+  
+  .text-body {
+    font-size: var(--font-size-p);
+    line-height: var(--line-height-typography);
+    font-family: var(--font-sans);
+  }
+  
+  /* Typography Variants */
+  .text-display {
+    font-size: 3.5rem;
+    line-height: var(--line-height-typography);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--letter-spacing-tight);
+    font-family: var(--font-sans);
+  }
+  
+  .text-subtitle {
+    font-size: 1.125rem;
+    line-height: var(--line-height-typography);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--letter-spacing-normal);
+    font-family: var(--font-sans);
+  }
+  
+  .text-caption {
+    font-size: 0.875rem;
+    line-height: var(--line-height-typography);
+    font-weight: var(--font-weight-normal);
+    letter-spacing: var(--letter-spacing-normal);
+    font-family: var(--font-sans);
+  }
+  
+  .text-overline {
+    font-size: 0.75rem;
+    line-height: var(--line-height-typography);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-widest);
+    font-family: var(--font-sans);
+  }
+  
+  .text-small {
+    font-size: 0.8125rem;
+    line-height: var(--line-height-typography);
+    font-weight: var(--font-weight-normal);
+    font-family: var(--font-sans);
+  }
+  
+  .text-tiny {
+    font-size: 0.75rem;
+    line-height: var(--line-height-typography);
+    font-weight: var(--font-weight-normal);
+    font-family: var(--font-sans);
+  }
+  
+  /* Font Weight Utilities */
+  .font-light { font-weight: var(--font-weight-light); }
+  .font-normal { font-weight: var(--font-weight-normal); }
+  .font-medium { font-weight: var(--font-weight-medium); }
+  .font-semibold { font-weight: var(--font-weight-semibold); }
+  .font-bold { font-weight: var(--font-weight-bold); }
+  .font-extrabold { font-weight: var(--font-weight-extrabold); }
+  .font-black { font-weight: var(--font-weight-black); }
+  
+  /* Letter Spacing Utilities */
+  .tracking-tight { letter-spacing: var(--letter-spacing-tight); }
+  .tracking-normal { letter-spacing: var(--letter-spacing-normal); }
+  .tracking-wide { letter-spacing: var(--letter-spacing-wide); }
+  .tracking-wider { letter-spacing: var(--letter-spacing-wider); }
+  .tracking-widest { letter-spacing: var(--letter-spacing-widest); }
+  
+  /* Typography Style Combinations */
+  .text-hero {
+    font-size: 4rem;
+    line-height: var(--line-height-typography);
+    font-weight: var(--font-weight-extrabold);
+    letter-spacing: var(--letter-spacing-tight);
+    font-family: var(--font-sans);
+  }
+  
+  .text-lead {
+    font-size: 1.25rem;
+    line-height: var(--line-height-typography);
+    font-weight: var(--font-weight-normal);
+    letter-spacing: var(--letter-spacing-normal);
+    font-family: var(--font-sans);
+  }
+  
+  .text-muted {
+    font-size: 0.875rem;
+    line-height: var(--line-height-typography);
+    font-weight: var(--font-weight-normal);
+    color: var(--muted-foreground);
+    font-family: var(--font-sans);
+  }
+  
+  /* Text Gradient - Updated with TweekCN colors */
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: var(--gradient-primary);
+  }
+  
+  /* Semantic Color Utilities - Updated */
+  .text-success {
+    color: var(--success);
+  }
+  
+  .text-warning {
+    color: var(--warning);
+  }
+  
+  .text-info {
+    color: var(--info);
+  }
+  
+  .bg-success {
+    background-color: var(--success);
+  }
+  
+  .bg-warning {
+    background-color: var(--warning);
+  }
+  
+  .bg-info {
+    background-color: var(--info);
+  }
+  
+  .border-success {
+    border-color: var(--success);
+  }
+  
+  .border-warning {
+    border-color: var(--warning);
+  }
+  
+  .border-info {
+    border-color: var(--info);
+  }
+  
+  /* Badge Text Colors */
+  .border-transparent.bg-success {
+    color: var(--success-foreground);
+  }
+  
+  .border-transparent.bg-warning {
+    color: var(--warning-foreground);
+  }
+  
+  .border-transparent.bg-info {
+    color: var(--info-foreground);
+  }
+  
+  .glass-effect {
+    @apply backdrop-blur-sm border border-border;
+    background: var(--card);
+    background-color: var(--card);
+  }
+  
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  
+  /* Progress Bar Utilities - Updated */
+  .progress-primary {
+    background-color: var(--primary);
+  }
+  
+  .progress-chart-1 {
+    background-color: var(--chart-1);
+  }
+  
+  .progress-chart-2 {
+    background-color: var(--chart-2);
+  }
+  
+  .progress-destructive {
+    background-color: var(--destructive);
+  }
+  
+  .project-bg-alpha {
+    background-color: var(--project-color);
+    opacity: 0.13; /* 22 in hex */
+  }
+  
+  .gradient-card {
+    background-image: var(--gradient-primary);
+  }
+
+  /* Hide scrollbar but maintain scroll functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+  }
+}
+
+/* Animation for Infinite Moving Cards - Your Custom Animation */
+@keyframes scroll {
+  to {
+    transform: translateX(calc(-50% - 0.5rem));
+  }
+}
+
+@keyframes scroll-reverse {
+  to {
+    transform: translateX(calc(50% + 0.5rem));
+  }
+}
+
+@keyframes scroll-vertical {
+  to {
+    transform: translateY(calc(-50% - 0.5rem));
+  }
+}
+
+@keyframes scroll-vertical-reverse {
+  to {
+    transform: translateY(calc(50% + 0.5rem));
+  }
+}
+
+.animate-scroll {
+  animation: scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite;
+}
+
+.animate-scroll-reverse {
+  animation: scroll-reverse var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite;
+}
+
+.animate-scroll-vertical {
+  animation: scroll-vertical var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite;
+}
+
+.animate-scroll-vertical-reverse {
+  animation: scroll-vertical-reverse var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite;
+}
+
+.animation-play-state-paused {
+  animation-play-state: paused;
+}
+
+.no-visible-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.no-visible-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* TweekCN Theme Integration */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-serif: var(--font-serif);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --shadow-2xs: var(--shadow-2xs);
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow: var(--shadow);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-2xl: var(--shadow-2xl);
+}

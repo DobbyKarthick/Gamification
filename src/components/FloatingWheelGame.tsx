@@ -75,6 +75,8 @@ export const FloatingWheelGame: React.FC<FloatingWheelGameProps> = ({
   const [showEmailInput, setShowEmailInput] = useState(false);
   const [userEmail, setUserEmail] = useState('');
   const [emailError, setEmailError] = useState('');
+  // Onboarding coachmark for bottom-right initiator icon (once per user)
+  const [showCoachmark, setShowCoachmark] = useState(false);
 
   // Handle ESC key to close modal
   useEffect(() => {
@@ -95,6 +97,17 @@ export const FloatingWheelGame: React.FC<FloatingWheelGameProps> = ({
       document.body.style.overflow = 'unset';
     };
   }, [isModalOpen]);
+
+  // Show coachmark once per user for the wheel game
+  useEffect(() => {
+    try {
+      const key = 'coachmark_shown_wheel';
+      const seen = typeof window !== 'undefined' ? localStorage.getItem(key) : '1';
+      if (!seen) {
+        setShowCoachmark(true);
+      }
+    } catch {}
+  }, []);
 
 
 
@@ -162,6 +175,11 @@ export const FloatingWheelGame: React.FC<FloatingWheelGameProps> = ({
     setShowEmailInput(false);
     setUserEmail('');
     setEmailError('');
+    // Dismiss coachmark and persist
+    try {
+      localStorage.setItem('coachmark_shown_wheel', '1');
+    } catch {}
+    setShowCoachmark(false);
   }, []);
 
   return (
@@ -189,6 +207,28 @@ export const FloatingWheelGame: React.FC<FloatingWheelGameProps> = ({
         {/* Pulse ring */}
         <div className="absolute inset-0 rounded-full border-2 border-white/30 animate-ping" />
       </button>
+
+      {/* Coachmark tooltip (once) */}
+      {showCoachmark && (
+        <div
+          className="fixed bottom-24 right-6 z-50 max-w-xs bg-white text-gray-800 border border-gray-200 shadow-xl rounded-lg p-3 animate-in fade-in duration-200"
+          onClick={() => setShowCoachmark(false)}
+          role="dialog"
+          aria-live="polite"
+        >
+          <div className="text-sm font-semibold mb-1">Try the Wheel</div>
+          <div className="text-xs">Click here to spin and unlock instant banking offers and coupons.</div>
+          <div className="mt-2 text-right">
+            <button
+              className="text-xs px-2 py-1 rounded bg-gray-100 hover:bg-gray-200"
+              onClick={() => {
+                try { localStorage.setItem('coachmark_shown_wheel', '1'); } catch {}
+                setShowCoachmark(false);
+              }}
+            >Got it</button>
+          </div>
+        </div>
+      )}
 
       {/* Modal Overlay */}
       {isModalOpen && (

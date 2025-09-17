@@ -9,14 +9,14 @@ import { SlotMachine } from '@/components/SlotMachine/Game';
 import { AdvancedScavengerHunt } from '@/components/ScavengerHunt/AdvancedScavengerHunt';
 import SidebarTest from '@/components/SidebarTest';
 import { Button } from '@/components/ui/button';
-import { Volume2, VolumeX } from 'lucide-react';
-import { playGameSound, setSoundEnabled } from '@/lib/sound-effects';
+import { playGameSound } from '@/lib/sound-effects';
 import { loadConfig, defaultSpinWheelConfig, defaultPickAGiftConfig, defaultScratchCardConfig, defaultPlinkoConfig } from "@/lib/config-loader";
 import { getRandomQuiz } from "@/lib/quiz-data";
 import { Quiz } from "@/components/OneQuestionQuiz";
 import { Quiz as MultiStepQuiz } from "@/components/MultiStepQuiz";
 import { MemoryMatchGame } from "@/components/MemoryMatchGame";
 import { MysteryPrizeEgg } from "@/components/MysteryPrizeEgg";
+import { GameModal } from '@/components/shared/GameModal';
 import "./index.css";
 
 interface AppProps {
@@ -124,7 +124,6 @@ function App({ prizes, colors, redeemCodes, title, buttonText, spinningText }: A
   });
 
   const [currentQuizData, setCurrentQuizData] = useState(getRandomQuiz());
-  const [soundEnabled, setSoundEnabledState] = useState(true);
 
   // Spin Wheel Event Handlers
   const handleSpinStart = () => {
@@ -235,17 +234,6 @@ function App({ prizes, colors, redeemCodes, title, buttonText, spinningText }: A
     }));
   };
 
-  // Sound toggle handler
-  const handleSoundToggle = () => {
-    const newState = !soundEnabled;
-    setSoundEnabledState(newState);
-    setSoundEnabled(newState);
-    // Test sound when enabling
-    if (newState) {
-      playGameSound('memory', 'flip').catch(console.warn);
-    }
-  };
-
   const winRate = gameStats.totalPlays > 0 ? Number(((gameStats.prizesWon / gameStats.totalPlays) * 100).toFixed(1)) : 0;
 
   const getGameTitle = () => {
@@ -276,9 +264,26 @@ function App({ prizes, colors, redeemCodes, title, buttonText, spinningText }: A
       case "memory": return "Test your memory by matching pairs of cards!";
       case "mystery": return "Crack eggs to reveal random prizes with different rarities!";
       case "slot": return "Pull the lever to spin the reels and win big!";
-      case "scavenger": return "Complete banking tasks to unlock exclusive rewards!";
+      case "scavenger": return "Complete banking-related tasks to unlock exclusive rewards!";
       case "sidebar-test": return "Interactive sidebar with hover animations and responsive design";
       default: return "Choose your game!";
+    }
+  };
+
+  const getGameBrief = () => {
+    switch (activeGame) {
+      case "wheel": return "Best for instant luck draws, coupon drops, and event promos.";
+      case "scratch": return "Great for reveal-based offers with gamified engagement.";
+      case "gift": return "Perfect for mystery rewards and festive campaigns.";
+      case "plinko": return "Use for physics-based fun with multiplier outcomes.";
+      case "quiz": return "Ideal for micro-surveys and lead qualification.";
+      case "multistep": return "Use when you need richer profiling and recommendations.";
+      case "memory": return "Boost retention with a quick skill-based challenge.";
+      case "mystery": return "Adds rarity tiers to surprise-and-delight moments.";
+      case "slot": return "Classic spin mechanic for jackpots and tiered wins.";
+      case "scavenger": return "Great for multi-step tasks, onboarding, or learning flows.";
+      case "sidebar-test": return "Component showcase for nav and layout behaviors.";
+      default: return "";
     }
   };
 
@@ -305,142 +310,178 @@ function App({ prizes, colors, redeemCodes, title, buttonText, spinningText }: A
     }
   };
 
+  // General intro popup on entering each game
+  const [introOpen, setIntroOpen] = useState(false);
+
+  const getGameIntroContent = () => {
+    const title = getGameTitle();
+    const brief = getGameBrief();
+    const description = getGameDescription();
+    // Banking-offer oriented usage guidance per game
+    const bankingUse = (() => {
+      switch (activeGame) {
+        case 'wheel':
+          return 'Use the wheel to drop instant coupons or fee waivers after completing actions like KYC, bill pay, or card activation.';
+        case 'scratch':
+          return 'Reveal cashback codes or interest boosts after users complete a transaction or subscribe to statements.';
+        case 'gift':
+          return 'Let users pick a mystery gift to redeem offers like lounge passes, surcharge waivers, or partner discounts.';
+        case 'plinko':
+          return 'Award multiplier-based rewards (e.g., points x2/x3) after setting up auto-debit or recurring deposits.';
+        case 'quiz':
+          return 'Ask one qualifying question and issue a targeted offer (e.g., credit card pre-approved bonus) based on the answer.';
+        case 'multistep':
+          return 'Collect preferences to recommend banking products and unlock a bundle offer (e.g., savings + card combo).';
+        case 'memory':
+          return 'Engage users with a quick challenge and give bonus points or fee waivers for high scores or completion.';
+        case 'mystery':
+          return 'Offer tiered rewards (common/rare/legendary) after milestone actions like eMandate setup or app install.';
+        case 'slot':
+          return 'Use spins to decide tiered cashbacks on spends; reveal higher tiers for premium customers.';
+        case 'scavenger':
+          return 'Guide users through onboarding tasks and reward each milestone with coupons or points.';
+        default:
+          return 'Play to unlock banking offers and rewards.';
+      }
+    })();
+
+    return (
+      <div className="p-6">
+        <h3 className="text-xl font-semibold mb-2">{title}</h3>
+        <p className="text-sm text-gray-700 mb-2">{description}</p>
+        <p className="text-sm text-gray-600 mb-4">{brief}</p>
+        <div className="rounded-lg p-3 mb-4" style={{ background: 'var(--accent)', color: 'var(--accent-foreground)' }}>
+          <span className="font-medium">Banking use-case:</span> {bankingUse}
+        </div>
+        <div className="flex justify-end gap-2">
+          <Button className="btn-outline" onClick={() => setIntroOpen(false)}>Close</Button>
+          <Button className="btn-primary" onClick={() => setIntroOpen(false)}>Start</Button>
+        </div>
+      </div>
+    );
+  };
+
+  // Open intro modal whenever the active game changes
+  useEffect(() => {
+    setIntroOpen(true);
+  }, [activeGame]);
+
   return (
     <>
       <SidebarLayout
         activeGame={activeGame}
         onGameChange={(game: string) => setActiveGame(game as "wheel" | "scratch" | "gift" | "plinko" | "quiz" | "multistep" | "memory" | "mystery" | "slot" | "scavenger" | "sidebar-test")}
         gameStats={gameStats}
-        soundEnabled={soundEnabled}
-        onSoundToggle={handleSoundToggle}
         winRate={winRate}
         getGameTitle={getGameTitle}
         getGameDescription={getGameDescription}
+        getGameBrief={getGameBrief}
         getGameInstructions={getGameInstructions}
       >
         <div className="p-4 space-y-8">
           {/* Scratch card is intentionally not rendered inline.
               Use the floating icon to open the unified modal experience. */}
 
-        {/* Pick-a-Gift is intentionally not rendered inline when active. */}
-        {activeGame === "gift" && null}
+          {/* Pick-a-Gift is intentionally not rendered inline when active. */}
+          {activeGame === "gift" && null}
 
-        {activeGame === "plinko" && (
-          <Plinko
-            prizes={configs.plinko.prizes}
-            boardWidth={600}
-            boardHeight={800}
-            pinRows={12}
-            ballSize={12}
-            pinSize={6}
-            animationDuration={3000}
-            title=""
-            buttonText="DROP BALL"
-            droppingText="Dropping..."
-            variant="card"
-            size="lg"
-            onDropStart={handlePlinkoDropStart}
-            onDropEnd={handlePlinkoDropEnd}
-          />
-        )}
+          {activeGame === "plinko" && (
+            <Plinko
+              prizes={configs.plinko.prizes}
+              boardWidth={600}
+              boardHeight={800}
+              pinRows={12}
+              ballSize={12}
+              pinSize={6}
+              animationDuration={3000}
+              title=""
+              buttonText="DROP BALL"
+              droppingText="Dropping..."
+              variant="card"
+              size="lg"
+              onDropStart={handlePlinkoDropStart}
+              onDropEnd={handlePlinkoDropEnd}
+            />
+          )}
 
-        {activeGame === "quiz" && (
-          <Quiz
-            quizData={currentQuizData}
-            title=""
-            buttonText="Submit Answer"
-            variant="card"
-            size="lg"
-            onAnswerSelect={handleQuizAnswerSelect}
-            onQuizComplete={handleQuizComplete}
-          />
-        )}
+          {activeGame === "quiz" && (
+            <Quiz
+              quizData={currentQuizData}
+              title=""
+              buttonText="Submit Answer"
+              variant="card"
+              size="lg"
+              onAnswerSelect={handleQuizAnswerSelect}
+              onQuizComplete={handleQuizComplete}
+            />
+          )}
 
-        {activeGame === "multistep" && (
-          <MultiStepQuiz
-            variant="card"
-            size="lg"
-            onComplete={handleMultiStepComplete}
-            onStepChange={handleMultiStepStepChange}
-          />
-        )}
+          {activeGame === "multistep" && (
+            <MultiStepQuiz
+              variant="card"
+              size="lg"
+              onComplete={handleMultiStepComplete}
+              onStepChange={handleMultiStepStepChange}
+            />
+          )}
 
-        {activeGame === "memory" && (
-          <MemoryMatchGame
-            onMoveMade={handleMemoryMove}
-            onGameComplete={handleMemoryComplete}
-            variant="card"
-            size="lg"
-          />
-        )}
+          {activeGame === "memory" && (
+            <MemoryMatchGame
+              onMoveMade={handleMemoryMove}
+              onGameComplete={handleMemoryComplete}
+              variant="card"
+              size="lg"
+            />
+          )}
 
-        {activeGame === "mystery" && (
-          <MysteryPrizeEgg
-            onEggCrack={handleEggCrack}
-            onGameComplete={handleMysteryComplete}
-            variant="card"
-            size="lg"
-          />
-        )}
+          {activeGame === "mystery" && (
+            <MysteryPrizeEgg
+              onEggCrack={handleEggCrack}
+              onGameComplete={handleMysteryComplete}
+              variant="card"
+              size="lg"
+            />
+          )}
 
-        {activeGame === "slot" && (
-          <SlotMachine
-            onSpinStart={handleSlotSpinStart}
-            onSpinEnd={handleSlotSpinEnd}
-            variant="card"
-            size="lg"
-          />
-        )}
+          {activeGame === "slot" && (
+            <SlotMachine
+              onSpinStart={handleSlotSpinStart}
+              onSpinEnd={handleSlotSpinEnd}
+              variant="card"
+              size="lg"
+            />
+          )}
 
-        {activeGame === "scavenger" && (
-          <AdvancedScavengerHunt
-            onStepComplete={handleScavengerStepComplete}
-            onGameComplete={handleScavengerComplete}
-            variant="card"
-            size="lg"
-            theme="banking"
-          />
-        )}
+          {activeGame === "scavenger" && (
+            <AdvancedScavengerHunt
+              onStepComplete={handleScavengerStepComplete}
+              onGameComplete={handleScavengerComplete}
+              variant="card"
+              size="lg"
+              theme="banking"
+            />
+          )}
 
-        {activeGame === "sidebar-test" && (
-          <SidebarTest />
-        )}
-      </div>
-    </SidebarLayout>
-    
-    {/* Floating Games */}
-    {activeGame === 'scratch' ? (
-      // On the Scratch screen, show only the Scratch floating icon/modal
-      <FloatingScratchCardGame
-        prize={currentScratchPrize}
-        cardWidth={configs.scratchCard.defaults.cardWidth}
-        cardHeight={configs.scratchCard.defaults.cardHeight}
-        scratchColor={configs.scratchCard.defaults.scratchColor}
-        scratchPattern={configs.scratchCard.defaults.scratchPattern}
-        revealThreshold={configs.scratchCard.defaults.revealThreshold}
-        title={configs.scratchCard.defaults.title}
-        resetButtonText={configs.scratchCard.defaults.resetButtonText}
-        instructions={configs.scratchCard.defaults.instructions}
-      />
-    ) : activeGame === 'wheel' ? (
-      // On the Wheel screen, show only the Wheel floating icon/modal
-      <FloatingWheelGame
-        segments={configs.spinWheel.segments}
-        onSpinStart={handleSpinStart}
-        onSpinEnd={handleSpinEnd}
-        buttonText={configs.spinWheel.defaults.buttonText}
-        spinningText={configs.spinWheel.defaults.spinningText}
-        title={configs.spinWheel.defaults.title}
-        wheelSize={configs.spinWheel.defaults.wheelSize}
-        animationDuration={configs.spinWheel.defaults.animationDuration}
-        minRevolutions={configs.spinWheel.defaults.minRevolutions}
-        maxRevolutions={configs.spinWheel.defaults.maxRevolutions}
-      />
-    ) : activeGame === 'gift' ? (
-      // On the Pick-a-Gift screen, show only the Gift floating icon/modal
-      <FloatingPickAGiftGame prizes={configs.pickAGift.prizes} className="right-6 bottom-6" />
-    ) : (
-      <>
+          {activeGame === "sidebar-test" && (
+            <SidebarTest />
+          )}
+        </div>
+      </SidebarLayout>
+
+      {/* Floating Games restricted to active page are below (kept unchanged) */}
+      {activeGame === 'scratch' ? (
+        <FloatingScratchCardGame
+          prize={currentScratchPrize}
+          cardWidth={configs.scratchCard.defaults.cardWidth}
+          cardHeight={configs.scratchCard.defaults.cardHeight}
+          scratchColor={configs.scratchCard.defaults.scratchColor}
+          scratchPattern={configs.scratchCard.defaults.scratchPattern}
+          revealThreshold={configs.scratchCard.defaults.revealThreshold}
+          title={configs.scratchCard.defaults.title}
+          resetButtonText={configs.scratchCard.defaults.resetButtonText}
+          instructions={configs.scratchCard.defaults.instructions}
+        />
+      ) : activeGame === 'wheel' ? (
         <FloatingWheelGame
           segments={configs.spinWheel.segments}
           onSpinStart={handleSpinStart}
@@ -453,22 +494,14 @@ function App({ prizes, colors, redeemCodes, title, buttonText, spinningText }: A
           minRevolutions={configs.spinWheel.defaults.minRevolutions}
           maxRevolutions={configs.spinWheel.defaults.maxRevolutions}
         />
+      ) : activeGame === 'gift' ? (
+        <FloatingPickAGiftGame prizes={configs.pickAGift.prizes} className="right-6 bottom-6" />
+      ) : null}
 
-        <FloatingScratchCardGame
-          prize={currentScratchPrize}
-          cardWidth={configs.scratchCard.defaults.cardWidth}
-          cardHeight={configs.scratchCard.defaults.cardHeight}
-          scratchColor={configs.scratchCard.defaults.scratchColor}
-          scratchPattern={configs.scratchCard.defaults.scratchPattern}
-          revealThreshold={configs.scratchCard.defaults.revealThreshold}
-          title={configs.scratchCard.defaults.title}
-          resetButtonText={configs.scratchCard.defaults.resetButtonText}
-          instructions={configs.scratchCard.defaults.instructions}
-        />
-
-        <FloatingPickAGiftGame prizes={configs.pickAGift.prizes} />
-      </>
-    )}
+      {/* Intro modal */}
+      <GameModal isOpen={introOpen} onClose={() => setIntroOpen(false)}>
+        {getGameIntroContent()}
+      </GameModal>
     </>
   );
 }

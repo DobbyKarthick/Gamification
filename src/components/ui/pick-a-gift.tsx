@@ -123,13 +123,13 @@ const PickAGift = React.forwardRef<HTMLDivElement, PickAGiftProps>(
         )}
         {...props}
       >
-        {/* Purple Gradient Background with Rays */}
+        {/* Xerago Brand Gradient Background with Rays */}
         <div
           className="relative rounded-2xl overflow-hidden shadow-2xl w-full max-w-2xl mx-auto"
           style={{
             background: `
               radial-gradient(circle at center, rgba(255,255,255,0.1) 1px, transparent 1px),
-              linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #6d28d9 100%)
+              linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)
             `,
             backgroundSize: '30px 30px, 100% 100%',
             minHeight: '400px'
